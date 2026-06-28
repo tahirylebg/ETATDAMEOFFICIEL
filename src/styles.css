@@ -75,9 +75,9 @@
   --input: oklch(0.84 0.03 70);
   --ring: var(--cocoa);
 
-  --font-serif: "Montserrat", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
-  --font-script: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-script: "Fraunces", ui-serif, Georgia, serif;
 
   --shadow-warm: 0 25px 60px -25px color-mix(in oklab, var(--cocoa) 40%, transparent);
   --shadow-soft: 0 8px 30px -12px color-mix(in oklab, var(--cocoa) 20%, transparent);
@@ -104,7 +104,6 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv01";
     -webkit-font-smoothing: antialiased;
   }
   a,
@@ -227,25 +226,11 @@
   animation: slow-zoom 18s ease-out forwards;
 }
 
-/* Scroll reveal — applied via IntersectionObserver toggling data-reveal="in" */
-@utility reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
-    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-[data-reveal="in"] {
-  opacity: 1;
-  transform: none;
-}
-
 /* Subtle paper grain */
 @utility paper-grain {
-  background-color: var(--cream);
   background-image:
-    radial-gradient(color-mix(in oklab, var(--cocoa) 6%, transparent) 1px, transparent 1px),
-    radial-gradient(color-mix(in oklab, var(--cocoa) 4%, transparent) 1px, transparent 1px);
+    radial-gradient(color-mix(in oklab, var(--cocoa) 7%, transparent) 1px, transparent 1px),
+    radial-gradient(color-mix(in oklab, var(--cocoa) 5%, transparent) 1px, transparent 1px);
   background-size:
     28px 28px,
     14px 14px;

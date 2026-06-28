@@ -24,13 +24,13 @@ function LegalNoticePage() {
       <div className="mx-auto max-w-4xl">
         <a
           href="/"
-          className="inline-flex items-center gap-2 rounded-full border border-cocoa/12 bg-card px-4 py-2 text-sm font-bold text-cocoa transition-colors hover:bg-cocoa/6"
+          className="inline-flex items-center gap-2 border border-cocoa bg-cocoa px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-cream transition-colors hover:bg-cocoa-deep"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-3.5 w-3.5" />
           Accueil
         </a>
 
-        <section className="mt-12 rounded-[2rem] border border-cocoa/12 bg-card p-6 shadow-paper sm:p-9">
+        <section className="mt-12 rounded-none border border-cocoa/12 bg-card p-6 shadow-paper sm:p-9">
           <p className="section-kicker text-terracotta">Informations légales</p>
           <h1 className="heading-readable mt-3 text-5xl text-cocoa sm:text-6xl">
             Mentions légales.

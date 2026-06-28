@@ -1,6 +1,12 @@
 import brunchImg from "@/assets/brunch.jpg";
 import cocktailImg from "@/assets/cocktail.jpg";
 import heroImg from "@/assets/hero-brunch.jpg";
+import insta1 from "@/assets/instagram/insta1.jpg";
+import insta2 from "@/assets/instagram/insta2.jpg";
+import insta3 from "@/assets/instagram/insta3.jpg";
+import insta4 from "@/assets/instagram/insta4.jpg";
+import insta5 from "@/assets/instagram/insta5.jpg";
+import insta6 from "@/assets/instagram/insta6.jpg";
 import interiorImg from "@/assets/interior.jpg";
 import tapasImg from "@/assets/tapas.jpg";
 
@@ -13,6 +19,10 @@ export const MAPS_URL =
 export const INSTAGRAM_HANDLE = "@Etatdame_Brunch";
 export const INSTAGRAM_URL = "https://www.instagram.com/Etatdame_Brunch/";
 export const SITE_URL = "https://etatdame.fr";
+export const TRIPADVISOR_URL =
+  "https://www.tripadvisor.fr/Restaurant_Review-g187154-d33066471-Reviews-Etat_Dame-Nimes_Gard_Occitanie.html";
+export const TRIPADVISOR_RATING = 5.0;
+export const TRIPADVISOR_REVIEW_COUNT = 22;
 
 export const images = {
   brunch: brunchImg,
@@ -21,6 +31,8 @@ export const images = {
   interior: interiorImg,
   tapas: tapasImg,
 };
+
+export const instagramPhotos = [insta1, insta2, insta3, insta4, insta5, insta6];
 
 export type BaseItem = {
   id: string;
@@ -436,30 +448,4 @@ export function euro(cents: number) {
   if (cents === 0) return "+0€";
   const value = cents / 100;
   return `${value % 1 === 0 ? value.toFixed(0) : value.toFixed(2).replace(".", ",")}€`;
-}
-
-export function reservationHref(message: string) {
-  return `mailto:${EMAIL}?subject=${encodeURIComponent(
-    "Demande de réservation ÉTAT DAME",
-  )}&body=${encodeURIComponent(message)}`;
-}
-
-export function smsHref(message: string) {
-  return `sms:${PHONE}?&body=${encodeURIComponent(message)}`;
-}
-
-export function defaultReservationMessage(extraLine?: string) {
-  return [
-    "Bonjour ÉTAT DAME,",
-    "",
-    "Je souhaite réserver une table.",
-    "Date:",
-    "Horaire:",
-    "Nombre de personnes:",
-    extraLine ? `Choix souhaité: ${extraLine}` : "",
-    "",
-    "Merci.",
-  ]
-    .filter(Boolean)
-    .join("\n");
 }

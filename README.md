@@ -8,7 +8,7 @@ Le projet propose :
 
 - une page d'accueil marketing avec présentation du lieu ;
 - une page `/menu` pensée pour consultation rapide sur mobile ;
-- une page `/qr` pour afficher des QR codes par table ;
+- une page `/qr` pour afficher et imprimer des QR codes par table ;
 - un formulaire de réservation relié à un webhook ou à l'envoi d'email ;
 - des pages légales et de confidentialité.
 
@@ -55,6 +55,8 @@ bun install
 bun run dev
 ```
 
+L'application est ensuite accessible sur l'URL locale affichée par Vite, généralement `http://localhost:5173`.
+
 ## Scripts disponibles
 
 ```bash
@@ -69,8 +71,16 @@ npm run format
 
 Créer un fichier `.env` à partir de `.env.example`.
 
+Sous macOS / Linux :
+
 ```bash
 cp .env.example .env
+```
+
+Sous Windows PowerShell :
+
+```powershell
+Copy-Item .env.example .env
 ```
 
 Variables principales :
@@ -88,7 +98,7 @@ VITE_PUBLIC_SITE_URL=https://etatdame.fr
 
 ## Réservations
 
-Le formulaire de réservation nécessite **au moins un mode d'envoi configuré en production** :
+Le formulaire de réservation nécessite **au moins un mode d'envoi configuré en production**.
 
 ### Option 1 — Webhook
 
@@ -106,6 +116,27 @@ Configurer :
 - `RESERVATION_EMAIL_FROM`
 
 Si aucun mode n'est configuré, le formulaire bloque proprement l'envoi et invite l'utilisateur à appeler le restaurant.
+
+## Fonctionnement du projet
+
+### Menu digital
+
+- la page `/menu` affiche la carte complète ;
+- le paramètre `?table=1` permet d'identifier la table ayant scanné le QR code ;
+- les données du menu, des horaires et des coordonnées viennent principalement de `src/lib/etat-dame.ts`.
+
+### QR codes
+
+- la page `/qr` génère un support imprimable pour chaque table ;
+- chaque QR code redirige vers `/menu?table={id}` ;
+- l'image du QR code s'appuie actuellement sur le service externe `api.qrserver.com`.
+
+### Réservation
+
+- le formulaire applique une validation serveur avec `zod` ;
+- un filtrage anti-spam basique est prévu via un champ piège (`website`) ;
+- un rate limit en mémoire limite les envois répétés ;
+- les requêtes cross-site non autorisées sont refusées.
 
 ## Pages principales
 
@@ -131,9 +162,19 @@ Points à vérifier :
 - vérifier que `VITE_PUBLIC_SITE_URL` correspond au domaine final ;
 - ajuster `public/robots.txt` si le domaine public change.
 
+## Personnalisation rapide
+
+Les zones à modifier le plus souvent sont :
+
+- `src/lib/etat-dame.ts` pour le menu, les prix, les horaires, les tables et les coordonnées ;
+- `src/routes/index.tsx` pour la page d'accueil ;
+- `src/routes/menu.tsx` pour la présentation de la carte ;
+- `src/routes/qr.tsx` pour les supports QR imprimables ;
+- `src/routes/mentions-legales.tsx` et `src/routes/confidentialite.tsx` pour les contenus juridiques.
+
 ## Identité du restaurant
 
-Les principales informations métier (coordonnées, horaires, menu, liens, tables) sont centralisées dans :
+Les principales informations métier sont centralisées dans :
 
 - `src/lib/etat-dame.ts`
 
@@ -146,3 +187,4 @@ La configuration serveur liée aux réservations est gérée dans :
 
 - Le dépôt contient déjà un dossier `dist/` et `node_modules/`, mais ils ne sont pas nécessaires pour comprendre ou maintenir le projet.
 - Le projet semble avoir été généré puis personnalisé à partir d'une base TanStack Start / Lovable.
+- Le rate limit des réservations est stocké en mémoire serveur ; son comportement peut donc varier selon l'hébergement ou le nombre d'instances.

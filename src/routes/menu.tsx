@@ -27,6 +27,7 @@ import {
   type DigitalMenuGroup,
   type DigitalMenuItem,
 } from "@/lib/etat-dame";
+import { Reveal } from "@/components/reveal";
 
 export const Route = createFileRoute("/menu")({
   head: () => ({
@@ -48,28 +49,7 @@ export const Route = createFileRoute("/menu")({
   component: MenuPage,
 });
 
-function useScrollReveal() {
-  useEffect(() => {
-    const elements = document.querySelectorAll<HTMLElement>("[data-reveal]");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).dataset.reveal = "in";
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
-    );
-
-    elements.forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
-  }, []);
-}
-
 function MenuPage() {
-  useScrollReveal();
   const scannedTable = useScannedTable();
 
   return (
@@ -126,18 +106,18 @@ function useScannedTable() {
 
 function MenuNav() {
   return (
-    <header className="fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-5 sm:pt-5">
-      <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-cocoa/10 bg-cream/92 px-3 py-2 shadow-paper backdrop-blur-md sm:px-5">
+    <header className="fixed inset-x-0 top-0 z-40 border-b border-cocoa/10 bg-[var(--cream-warm)]">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
         <a
           href="/"
-          className="flex items-center gap-3 rounded-full pr-2 text-cocoa transition-opacity hover:opacity-80"
+          className="flex items-center gap-3 text-cocoa transition-opacity hover:opacity-80"
         >
-          <span className="grid h-10 w-10 place-items-center rounded-full border border-cocoa/25 bg-card font-serif text-2xl leading-none">
+          <span className="grid h-9 w-9 place-items-center rounded-sm border border-cocoa/25 bg-card font-serif text-xl leading-none">
             d
           </span>
-          <span className="hidden font-serif text-xl tracking-[0.16em] sm:block">ÉTAT DAME</span>
+          <span className="font-serif text-lg tracking-[0.22em]">ÉTAT DAME</span>
         </a>
-        <nav className="hidden items-center gap-7 text-sm font-semibold text-cocoa/86 md:flex">
+        <nav className="hidden items-center gap-8 text-xs font-bold uppercase tracking-[0.14em] text-cocoa/80 md:flex">
           <a href="#manger" className="transition-colors hover:text-cocoa">
             Manger
           </a>
@@ -150,15 +130,12 @@ function MenuNav() {
           <a href="#infos" className="transition-colors hover:text-cocoa">
             Infos
           </a>
-          <a href="/#reservation" className="transition-colors hover:text-cocoa">
-            Réserver
-          </a>
         </nav>
         <a
           href="/"
-          className="inline-flex items-center gap-2 rounded-full border border-cocoa/12 px-4 py-2 text-sm font-semibold text-cocoa transition-colors hover:bg-cocoa/6"
+          className="inline-flex items-center gap-2 border border-cocoa bg-cocoa px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-cream transition-colors hover:bg-cocoa-deep"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-3.5 w-3.5" />
           Accueil
         </a>
       </div>
@@ -181,27 +158,20 @@ function MenuHero({ scannedTable }: { scannedTable: string }) {
           </p>
           {scannedTable && (
             <p className="mt-4 inline-flex rounded-full border border-cocoa/12 bg-card px-4 py-2 text-sm font-bold text-cocoa shadow-paper">
-              Scan depuis {scannedTable}. Pour réserver, le bouton reste disponible en bas de page.
+              Scan depuis {scannedTable}. Pour réserver, appelez directement le restaurant.
             </p>
           )}
           <div className="mt-8 flex flex-wrap gap-3">
             <a
               href="#manger"
-              className="inline-flex items-center gap-2 rounded-full bg-cocoa px-6 py-3 text-sm font-bold text-cream shadow-warm transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 rounded-none bg-cocoa px-6 py-3 text-sm font-bold text-cream shadow-warm transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
             >
               <Utensils className="h-4 w-4" />
               Voir les plats
             </a>
             <a
-              href="/#reservation"
-              className="inline-flex items-center gap-2 rounded-full border border-cocoa/14 bg-card px-6 py-3 text-sm font-bold text-cocoa transition-colors hover:bg-beige/55"
-            >
-              <CalendarDays className="h-4 w-4" />
-              Réserver
-            </a>
-            <a
               href="#boire"
-              className="inline-flex items-center gap-2 rounded-full border border-cocoa/14 bg-card px-6 py-3 text-sm font-bold text-cocoa transition-colors hover:bg-beige/55"
+              className="inline-flex items-center gap-2 rounded-none border border-cocoa/14 bg-card px-6 py-3 text-sm font-bold text-cocoa transition-colors hover:bg-beige/55"
             >
               <Coffee className="h-4 w-4" />
               Voir les boissons
@@ -209,11 +179,11 @@ function MenuHero({ scannedTable }: { scannedTable: string }) {
           </div>
         </div>
 
-        <figure className="relative overflow-hidden rounded-[2rem] border border-cocoa/12 bg-card p-2 shadow-paper">
+        <figure className="relative overflow-hidden border-[10px] border-cocoa bg-cocoa shadow-warm">
           <img
             src={images.brunch}
             alt="Brunch servi chez ÉTAT DAME"
-            className="aspect-[16/11] w-full rounded-[1.5rem] object-cover"
+            className="aspect-[16/11] w-full object-cover"
             width={1400}
             height={960}
           />
@@ -228,19 +198,18 @@ function MenuHero({ scannedTable }: { scannedTable: string }) {
 
 function QuickTabs() {
   return (
-    <div className="sticky top-[4.75rem] z-30 border-y border-cocoa/10 bg-cream/94 px-5 py-3 backdrop-blur-md sm:px-8 md:top-[5.6rem]">
+    <div className="sticky top-[4.3rem] z-30 bg-cream/94 px-5 py-3 backdrop-blur-md sm:px-8">
       <nav className="mx-auto flex max-w-7xl gap-2 overflow-x-auto" aria-label="Accès carte">
         {[
           ["#manger", "Manger"],
           ["#boire", "Boire"],
           ["#cocktails", "Cocktails"],
           ["#infos", "Infos pratiques"],
-          ["/#reservation", "Réserver"],
         ].map(([href, label]) => (
           <a
             key={href}
             href={href}
-            className="shrink-0 rounded-full border border-cocoa/12 bg-card px-5 py-2.5 text-sm font-bold text-cocoa transition-colors hover:bg-cocoa hover:text-cream"
+            className="shrink-0 px-5 py-2.5 text-sm font-bold text-cocoa transition-colors hover:text-terracotta"
           >
             {label}
           </a>
@@ -282,8 +251,8 @@ function DigitalMenuSection({
             <p className="mt-4 max-w-xl leading-relaxed text-cocoa/76">{intro}</p>
             {detailed && (
               <div className="mt-4 flex max-w-xl flex-wrap items-center gap-2 text-xs font-semibold text-cocoa/70">
-                <span className="inline-flex items-center gap-2 rounded-full border border-olive/20 bg-olive/10 px-3 py-2 font-bold uppercase tracking-[0.12em] text-cocoa">
-                  <Leaf className="h-3.5 w-3.5 text-olive" strokeWidth={1.8} />
+                <span className="inline-flex items-center gap-2 font-bold uppercase tracking-[0.12em] text-olive">
+                  <Leaf className="h-3.5 w-3.5" strokeWidth={1.8} />
                   Sans viande
                 </span>
                 <span>Repère indicatif, pas une mention vegan ou allergènes.</span>
@@ -318,41 +287,28 @@ function MenuGroupCard({
     group.items.length > 1 ? `Dès ${group.items[0].price}` : (group.items[0]?.price ?? "");
 
   return (
-    <article
-      className={`reveal mb-5 break-inside-avoid overflow-hidden rounded-[1.45rem] border border-cocoa/14 bg-card p-5 shadow-paper sm:p-6 ${
+    <Reveal
+      as="article"
+      className={`mb-5 break-inside-avoid overflow-hidden rounded-none border border-cocoa/14 bg-card p-5 shadow-paper sm:p-6 ${
         detailed && !group.compact ? "ring-1 ring-cocoa/4" : ""
       }`}
-      data-reveal
-      style={{ "--item-index": index } as React.CSSProperties}
+      delay={Math.min(index, 4) * 0.08}
     >
       {group.image && (
-        <figure className="-mx-5 -mt-5 mb-5 overflow-hidden sm:-mx-6 sm:-mt-6">
-          <div className="relative">
-            <img
-              src={group.image}
-              alt={group.imageAlt ?? group.title}
-              className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-[1.03]"
-              loading="lazy"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-cocoa/78 via-cocoa/10 to-transparent" />
-            <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3">
-              <p className="max-w-[12rem] font-serif text-3xl leading-none text-cream">
-                {group.title}
-              </p>
-              {priceHint && (
-                <span className="shrink-0 rounded-full bg-cream px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-cocoa shadow-paper">
-                  {priceHint}
-                </span>
-              )}
-            </div>
-          </div>
+        <figure className="mb-4 overflow-hidden border-[6px] border-cocoa">
+          <img
+            src={group.image}
+            alt={group.imageAlt ?? group.title}
+            className="aspect-[16/10] w-full object-cover transition-transform duration-700 hover:scale-[1.03]"
+            loading="lazy"
+          />
         </figure>
       )}
       <div className="flex items-start justify-between gap-4 border-b border-cocoa/12 pb-4">
         <h3 className="font-sans text-xl font-black uppercase leading-tight text-cocoa sm:text-2xl">
           {group.title}
         </h3>
-        {priceHint && !group.image ? (
+        {priceHint ? (
           <span className="shrink-0 rounded-full bg-cocoa px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-cream">
             {priceHint}
           </span>
@@ -361,7 +317,7 @@ function MenuGroupCard({
         )}
       </div>
       {group.composition && (
-        <div className="mt-4 rounded-[1.1rem] bg-beige/38 p-4">
+        <div className="mt-4 rounded-none bg-beige/38 p-4">
           <p className="text-[10px] font-black uppercase tracking-[0.18em] text-cocoa/62">
             Composition
           </p>
@@ -379,7 +335,7 @@ function MenuGroupCard({
           <MenuItemRow key={`${group.title}-${item.name}`} item={item} />
         ))}
       </div>
-    </article>
+    </Reveal>
   );
 }
 
@@ -392,8 +348,8 @@ function MenuItemRow({ item }: { item: DigitalMenuItem }) {
             {item.name}
           </p>
           {item.vegetarian && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-olive/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.1em] text-cocoa">
-              <Leaf className="h-3 w-3 text-olive" strokeWidth={1.8} />
+            <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-[0.1em] text-olive">
+              <Leaf className="h-3 w-3" strokeWidth={1.8} />
               Sans viande
             </span>
           )}
@@ -412,7 +368,7 @@ function MenuInfo() {
   return (
     <section id="infos" className="scroll-mt-32 bg-cocoa px-5 py-14 text-cream sm:px-8 sm:py-18">
       <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div>
+        <Reveal>
           <p className="section-kicker text-cream/90">Infos pratiques</p>
           <h2 className="heading-readable mt-3 max-w-3xl text-5xl sm:text-6xl">
             Carte simple, prix directs, réservation à part.
@@ -420,12 +376,12 @@ function MenuInfo() {
           <p className="mt-5 max-w-2xl leading-relaxed text-cream/82">
             Les prix sont indiqués en euros. Addition partagée à parts égales uniquement.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="grid gap-3">
+        <Reveal className="grid gap-3" delay={0.15}>
           <a
             href={`tel:${PHONE}`}
-            className="inline-flex items-center justify-between gap-4 rounded-2xl border border-cream/14 bg-cream/8 px-5 py-4 text-cream transition-colors hover:bg-cream/14"
+            className="inline-flex items-center justify-between gap-4 rounded-none border border-cream/14 bg-cream/8 px-5 py-4 text-cream transition-colors hover:bg-cream/14"
           >
             <span className="inline-flex items-center gap-3 font-semibold">
               <Phone className="h-5 w-5" strokeWidth={1.5} />
@@ -437,7 +393,7 @@ function MenuInfo() {
             href={MAPS_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-between gap-4 rounded-2xl border border-cream/14 bg-cream/8 px-5 py-4 text-cream transition-colors hover:bg-cream/14"
+            className="inline-flex items-center justify-between gap-4 rounded-none border border-cream/14 bg-cream/8 px-5 py-4 text-cream transition-colors hover:bg-cream/14"
           >
             <span className="inline-flex items-center gap-3 font-semibold">
               <MapPin className="h-5 w-5" strokeWidth={1.5} />
@@ -445,17 +401,7 @@ function MenuInfo() {
             </span>
             <span className="text-right font-bold">{ADDRESS}</span>
           </a>
-          <a
-            href="/#reservation"
-            className="inline-flex items-center justify-between gap-4 rounded-2xl bg-cream px-5 py-4 text-cocoa shadow-paper transition-transform hover:-translate-y-0.5 active:scale-[0.98]"
-          >
-            <span className="inline-flex items-center gap-3 font-semibold">
-              <CalendarDays className="h-5 w-5" strokeWidth={1.5} />
-              Réserver
-            </span>
-            <span className="font-bold">Envoyer une demande</span>
-          </a>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -497,21 +443,21 @@ function MenuMobileBar() {
     <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 gap-2 border-t border-cocoa/10 bg-cream/94 p-3 shadow-[0_-18px_44px_-30px_color-mix(in_oklab,var(--cocoa)_60%,transparent)] backdrop-blur-md md:hidden">
       <a
         href="#manger"
-        className="inline-flex items-center justify-center gap-2 rounded-full border border-cocoa/14 bg-card py-3.5 text-sm font-semibold text-cocoa"
+        className="inline-flex items-center justify-center gap-2 rounded-none border border-cocoa/14 bg-card py-3.5 text-sm font-semibold text-cocoa"
       >
         <Utensils className="h-4 w-4" /> Manger
       </a>
       <a
         href="#boire"
-        className="inline-flex items-center justify-center gap-2 rounded-full border border-cocoa/14 bg-card py-3.5 text-sm font-semibold text-cocoa"
+        className="inline-flex items-center justify-center gap-2 rounded-none border border-cocoa/14 bg-card py-3.5 text-sm font-semibold text-cocoa"
       >
         <Coffee className="h-4 w-4" /> Boire
       </a>
       <a
-        href="/#reservation"
-        className="inline-flex items-center justify-center gap-2 rounded-full bg-cocoa py-3.5 text-sm font-semibold text-cream shadow-warm"
+        href={`tel:${PHONE}`}
+        className="inline-flex items-center justify-center gap-2 rounded-none bg-cocoa py-3.5 text-sm font-semibold text-cream shadow-warm"
       >
-        <CalendarDays className="h-4 w-4" /> Réserver
+        <Phone className="h-4 w-4" /> Réserver
       </a>
     </div>
   );
