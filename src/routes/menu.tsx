@@ -54,8 +54,14 @@ function MenuPage() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-cocoa focus:px-5 focus:py-3 focus:text-sm focus:text-cream"
+      >
+        Aller au contenu
+      </a>
       <MenuNav />
-      <main>
+      <main id="main">
         <MenuHero scannedTable={scannedTable} />
         <QuickTabs />
         <DigitalMenuSection

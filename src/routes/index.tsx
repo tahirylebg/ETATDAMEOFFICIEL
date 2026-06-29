@@ -137,7 +137,7 @@ function Hero() {
     >
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-end lg:gap-16">
         <div className="max-w-2xl">
-          <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-cocoa/90">
+          <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-terracotta">
             <Sparkles className="h-3.5 w-3.5" strokeWidth={1.6} />
             Brunch maison à Nîmes
           </p>
