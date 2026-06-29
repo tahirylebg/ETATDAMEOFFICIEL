@@ -1,36 +1,39 @@
 # ÉTAT DAME Restaurant OS
 
-Site vitrine et menu digital du restaurant **ÉTAT DAME** à Nîmes, avec formulaire de réservation, page menu pour QR code et pages légales.
+Site vitrine et menu digital du restaurant **ÉTAT DAME** à Nîmes : page d'accueil, carte digitale pour QR code, avis TripAdvisor, aperçu Instagram et pages légales.
 
 ## Aperçu
 
 Le projet propose :
 
-- une page d'accueil marketing avec présentation du lieu ;
-- une page `/menu` pensée pour consultation rapide sur mobile ;
+- une page d'accueil marketing avec présentation du lieu, aperçu de la carte, avis clients et aperçu Instagram ;
+- une page `/menu` pensée pour consultation rapide sur mobile après scan QR code ;
 - une page `/qr` pour afficher et imprimer des QR codes par table ;
-- un formulaire de réservation relié à un webhook ou à l'envoi d'email ;
 - des pages légales et de confidentialité.
+
+Il n'y a pas de réservation en ligne : les demandes se font par téléphone ou via Instagram (boutons "Appeler" disposés sur tout le site).
 
 ## Stack technique
 
 - **Frontend** : React 19
 - **Build tool** : Vite
-- **Routing / server functions** : TanStack Start + TanStack Router
+- **Routing** : TanStack Start + TanStack Router
 - **UI** : Tailwind CSS 4 + composants Radix UI
-- **Validation** : Zod
+- **Animations** : Motion (`whileInView` + ressorts physiques, composant `Reveal`)
+- **Polices** : Fraunces (titres) + Nunito Sans (texte courant)
 - **Qualité** : ESLint + Prettier
 
 ## Structure du projet
 
 ```text
 src/
-  assets/                  Images du restaurant
-  components/ui/           Composants UI réutilisables
-  hooks/                   Hooks React
-  lib/                     Données métier, config serveur, helpers
-  lib/api/                 Fonctions serveur (réservations)
+  assets/                  Images du restaurant + dossier instagram/
+  components/
+    ui/                    Composants UI réutilisables
+    reveal.tsx             Wrapper d'animation scroll-reveal (Motion)
+  lib/                     Données métier, helpers (etat-dame.ts)
   routes/                  Pages de l'application
+  server.ts                Entrée serveur SSR + headers de sécurité
 public/                    Assets publics
 ```
 
@@ -55,7 +58,7 @@ bun install
 bun run dev
 ```
 
-L'application est ensuite accessible sur l'URL locale affichée par Vite, généralement `http://localhost:5173`.
+L'application est ensuite accessible sur l'URL locale affichée par Vite (le port par défaut peut varier si déjà occupé).
 
 ## Scripts disponibles
 
@@ -83,39 +86,17 @@ Sous Windows PowerShell :
 Copy-Item .env.example .env
 ```
 
-Variables principales :
+Seule variable utilisée :
 
 ```env
-RESERVATION_WEBHOOK_URL=
-RESERVATION_WEBHOOK_SECRET=
-
-RESEND_API_KEY=
-RESERVATION_EMAIL_TO=etatdame.contact@gmail.com
-RESERVATION_EMAIL_FROM=
-
 VITE_PUBLIC_SITE_URL=https://etatdame.fr
 ```
 
-## Réservations
+## Sécurité
 
-Le formulaire de réservation nécessite **au moins un mode d'envoi configuré en production**.
-
-### Option 1 — Webhook
-
-Configurer :
-
-- `RESERVATION_WEBHOOK_URL`
-- `RESERVATION_WEBHOOK_SECRET` *(optionnel selon votre backend)*
-
-### Option 2 — Email via Resend
-
-Configurer :
-
-- `RESEND_API_KEY`
-- `RESERVATION_EMAIL_TO`
-- `RESERVATION_EMAIL_FROM`
-
-Si aucun mode n'est configuré, le formulaire bloque proprement l'envoi et invite l'utilisateur à appeler le restaurant.
+- Headers de sécurité (CSP, X-Frame-Options, HSTS, nosniff, Referrer-Policy) appliqués à toutes les réponses dans `src/server.ts`.
+- Aucun secret ni clé API dans le code : le site ne fait aucune écriture de données (pas de formulaire, pas de base de données).
+- `.env` exclu du dépôt via `.gitignore`.
 
 ## Fonctionnement du projet
 
@@ -128,15 +109,12 @@ Si aucun mode n'est configuré, le formulaire bloque proprement l'envoi et invit
 ### QR codes
 
 - la page `/qr` génère un support imprimable pour chaque table ;
-- chaque QR code redirige vers `/menu?table={id}` ;
-- l'image du QR code s'appuie actuellement sur le service externe `api.qrserver.com`.
+- chaque QR code redirige vers `/menu?table={id}`.
 
-### Réservation
+### Avis et réseaux sociaux
 
-- le formulaire applique une validation serveur avec `zod` ;
-- un filtrage anti-spam basique est prévu via un champ piège (`website`) ;
-- un rate limit en mémoire limite les envois répétés ;
-- les requêtes cross-site non autorisées sont refusées.
+- la note et le nombre d'avis TripAdvisor sont affichés via un lien vers la page officielle (pas de citation de texte tiers, pour rester dans les conditions d'utilisation de TripAdvisor) ;
+- un aperçu Instagram (mosaïque de photos) renvoie vers le compte `@Etatdame_Brunch`.
 
 ## Pages principales
 
@@ -160,31 +138,20 @@ Points à vérifier :
 - renseigner l'hébergeur exact dans la page des mentions légales ;
 - compléter les informations société si nécessaire ;
 - vérifier que `VITE_PUBLIC_SITE_URL` correspond au domaine final ;
-- ajuster `public/robots.txt` si le domaine public change.
+- ajuster `public/robots.txt` si le domaine public change ;
+- côté hébergeur (Cloudflare ou autre) : activer HTTPS forcé, TLS strict, et configurer les variables d'environnement sur la plateforme plutôt que dans le dépôt.
 
 ## Personnalisation rapide
 
 Les zones à modifier le plus souvent sont :
 
-- `src/lib/etat-dame.ts` pour le menu, les prix, les horaires, les tables et les coordonnées ;
+- `src/lib/etat-dame.ts` pour le menu, les prix, les horaires, les tables, les coordonnées et les photos Instagram ;
 - `src/routes/index.tsx` pour la page d'accueil ;
 - `src/routes/menu.tsx` pour la présentation de la carte ;
 - `src/routes/qr.tsx` pour les supports QR imprimables ;
 - `src/routes/mentions-legales.tsx` et `src/routes/confidentialite.tsx` pour les contenus juridiques.
 
-## Identité du restaurant
-
-Les principales informations métier sont centralisées dans :
-
-- `src/lib/etat-dame.ts`
-
-La configuration serveur liée aux réservations est gérée dans :
-
-- `src/lib/config.server.ts`
-- `src/lib/api/reservations.functions.ts`
-
 ## Notes
 
-- Le dépôt contient déjà un dossier `dist/` et `node_modules/`, mais ils ne sont pas nécessaires pour comprendre ou maintenir le projet.
-- Le projet semble avoir été généré puis personnalisé à partir d'une base TanStack Start / Lovable.
-- Le rate limit des réservations est stocké en mémoire serveur ; son comportement peut donc varier selon l'hébergement ou le nombre d'instances.
+- Le projet a été généré puis personnalisé à partir d'une base TanStack Start / Lovable.
+- La fonctionnalité de réservation en ligne (formulaire, webhook, email) a été retirée intentionnellement : les réservations se font par téléphone ou Instagram.
